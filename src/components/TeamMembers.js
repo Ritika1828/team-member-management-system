@@ -4,7 +4,7 @@ import Modal from "./Modal";
 function TeamMembers() {
   const [showModal, setShowModal] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
-  console.log("modal", showModal, isEdit);
+  const [editingMember, setEditingMember] = useState(null);
   const initialTeamMembers = [
     {
       id: 1,
@@ -51,8 +51,13 @@ function TeamMembers() {
     setShowModal(false);
   };
 
-  const handleEditMember = () => {
+  const handleAddMemberClick = () => {
+    setIsEdit(false);
+    setShowModal(true);
+  };
+  const handleEditMember = (member) => {
     setIsEdit(true);
+    setEditingMember(member);
     setShowModal(true);
   };
 
@@ -65,33 +70,44 @@ function TeamMembers() {
     setShowModal(false);
   };
 
+  const handleDeleteMember = (deletedMember) => {
+    setTeamMembers(teamMembers.filter((member) => member.id != deletedMember));
+    setShowModal(false);
+  };
+
   return (
-    <div className=" bg-gray-200 h-full w-full text-center flex flex-col justify-center items-center">
+    <div className=" bg-gray-200 h-screen w-full text-center flex flex-col justify-center items-center">
       {showModal ? (
         <Modal
           isOpen={true}
           isCloseBtn={true}
           onClose={handleCloseBtnClick}
-          containerClassName="' md:-w-[432px] w-full h-[590px] '"
+          containerClassName="' md:w-[500px] w-full h-[780px] '"
           onAddMember={handleAddMember}
-          teamMembers={teamMembers}
           isEdit={isEdit}
+          editingMember={editingMember}
           onUpdateMember={handleUpdateMember}
+          onDeleteMember={handleDeleteMember}
         />
       ) : null}
-      <div>List Screen</div>
-      <div className="bg-white w-96 text-center">
-        <div className="cursor-pointer" onClick={() => setShowModal(true)}>
+      <h1 className="text-5xl mb-10 mt-10">List Screen</h1>
+      <div className="bg-white w-screen h-screen text-center rounded-lg">
+        <div
+          className="cursor-pointer text-5xl text-right mr-4"
+          onClick={handleAddMemberClick}
+        >
           +
         </div>
-        <div>Team members</div>
-        <div className="mb-4">you have {teamMembers.length} team members</div>
+        <div className="text-left ml-8 md:ml-20 text-2xl">Team members</div>
+        <div className="mb-4 text-left text-1xl text-gray-400 ml-8 md:ml-20">
+          you have {teamMembers.length} team members
+        </div>
         <hr />
         <div>
           {teamMembers.map((member) => (
-            <div className="ml-2">
+            <div className="ml-8 md:ml-16">
               <div
-                onClick={handleEditMember}
+                onClick={() => handleEditMember(member)}
                 className="flex flex-row justify-start mt-4 mb-4"
               >
                 <div className="mr-4">
